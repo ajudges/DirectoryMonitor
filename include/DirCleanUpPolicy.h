@@ -7,16 +7,16 @@ using std::string;
 
 enum cleanUpPolicyType { ALL, exclude };
 
-class CleanUpPolicy
+class DirCleanUpPolicy
 {
 private:
     cleanUpPolicyType _policy;
     vector<string> _exclude;
 
 public:
-    CleanUpPolicy(cleanUpPolicyType policy, vector<string> exclude);
-    CleanUpPolicy(cleanUpPolicyType policy);
+    DirCleanUpPolicy(cleanUpPolicyType policy, vector<string> exclude);
+    DirCleanUpPolicy(cleanUpPolicyType policy);
     void CleanUp(string &dir);
 
-    ~CleanUpPolicy();
+    ~DirCleanUpPolicy();
 };

@@ -1,4 +1,4 @@
-#include "DirectoryPolicy.h"
+#include "DirControlPolicy.h"
 #include <filesystem>
 #include <iostream>
 #include <numeric>
@@ -7,13 +7,13 @@ using std::accumulate;
 using std::cout;
 namespace fs = std::filesystem;
 
-DirectoryPolicy::DirectoryPolicy(directoryPolicyType policy, double value)
+DirControlPolicy::DirControlPolicy(controlPolicyType policy, double value)
     : _type(policy), _value(value) {}
 
-DirectoryPolicy::~DirectoryPolicy() {}
+DirControlPolicy::~DirControlPolicy() {}
 
-bool DirectoryPolicy::isAgreement(string &path) const {
-  if (_type == directoryPolicyType::max_num_of_content) {
+bool DirControlPolicy::isAgreement(string &path) const {
+  if (_type == controlPolicyType::max_num_of_content) {
     // check if max content is reached
     int count(0);
     auto fileCount =
@@ -23,7 +23,7 @@ bool DirectoryPolicy::isAgreement(string &path) const {
     return fileCount <= _value;
   }
 
-  if (_type == directoryPolicyType::max_size) {
+  if (_type == controlPolicyType::max_size) {
     // check if max size is reached
     double dirSize = accumulate(
         fs::recursive_directory_iterator(path),

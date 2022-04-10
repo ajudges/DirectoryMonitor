@@ -1,4 +1,4 @@
-#include "../include/DirectoryPolicy.h"
+#include "../include/DirControlPolicy.h"
 #include <fstream>
 #include <iostream>
 #include <numeric>
@@ -16,7 +16,7 @@ void test_max_num_of_content() {
   std::ofstream("sandbox/file1.txt");
   std::ofstream("sandbox/file2.txt");
   std::ofstream("sandbox/file3.txt");
-  DirectoryPolicy dirPolicy(directoryPolicyType::max_num_of_content, 2);
+  DirControlPolicy dirPolicy(controlPolicyType::max_num_of_content, 2);
 
   assert(dirPolicy.isAgreement(dirName) == false);
   fs::remove("sandbox/file3.txt");
@@ -39,7 +39,7 @@ void test_max_size() {
   int size = 10000000; //~10MB
   std::generate_n(std::ostream_iterator<char>(file, ""), size, [&]{ return dis(gen); });
 
-  DirectoryPolicy dirPolicy(directoryPolicyType::max_size, 2);
+  DirControlPolicy dirPolicy(controlPolicyType::max_size, 2);
   assert(dirPolicy.isAgreement(dirName) == false);
   
   fs::remove(sandbox/ "text_file.txt");
