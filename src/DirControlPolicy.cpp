@@ -12,6 +12,7 @@ DirControlPolicy::DirControlPolicy(controlPolicyType policy, double value)
 
 DirControlPolicy::~DirControlPolicy() {}
 
+// implement check if directory is in agreement with policy
 bool DirControlPolicy::isAgreement(string &path) const {
   if (_type == controlPolicyType::max_num_of_content) {
     // check if max content is reached

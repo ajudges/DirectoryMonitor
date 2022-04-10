@@ -16,6 +16,7 @@ struct dirPolicy {
   std::unique_ptr<DeletePolicy> cleanUpPolicy;
 };
 
+// Read configuration file
 void ReadConf(string user_input, string &x) {
   cout << "Enter " << user_input << ": " << std::endl;
   std::cin >> x;

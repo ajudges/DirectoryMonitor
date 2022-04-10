@@ -12,6 +12,6 @@ private:
 
 public:
   DirControlPolicy(controlPolicyType policy, double value);
-  bool isAgreement(string &path) const;
+  bool isAgreement(string &path) const; // is directory in agreement with policy?
   ~DirControlPolicy();
 };

@@ -17,6 +17,7 @@ DeletePolicy::DeletePolicy(deletePolicyType policy) : _policy(policy) {}
 
 DeletePolicy::~DeletePolicy() {}
 
+// implement directory clean up
 void DeletePolicy::CleanUp(string &dir) {
   int count(0);
   auto exclude = std::make_shared<vector<string>>(_exclude);
