@@ -1,4 +1,4 @@
-#include "DirCleanUpPolicy.h"
+#include "DeletePolicy.h"
 #include "DirControlPolicy.h"
 
 #include <filesystem>
@@ -13,10 +13,10 @@ namespace fs = std::filesystem;
 struct dirPolicy {
   std::unique_ptr<string> path;
   std::unique_ptr<DirControlPolicy> controlPolicy;
-  std::unique_ptr<DirCleanUpPolicy> cleanUpPolicy;
+  std::unique_ptr<DeletePolicy> cleanUpPolicy;
 };
 
-void GetInput(string user_input, string &x) {
+void ReadConf(string user_input, string &x) {
   cout << "Enter " << user_input << ": " << std::endl;
   std::cin >> x;
 
@@ -26,10 +26,10 @@ void GetInput(string user_input, string &x) {
 
 int main() {
   string dir_path;
-  GetInput("path to monitor", dir_path);
+  ReadConf("path to monitor", dir_path);
 
   DirControlPolicy controlPolicy(controlPolicyType::max_num_of_content, 2);
-  DirCleanUpPolicy cleanUpPolicy(cleanUpPolicyType::ALL);
+  DeletePolicy cleanUpPolicy(deletePolicyType::ALL);
 
   vector<dirPolicy> directories;
   if (fs::is_directory(dir_path)) {
@@ -38,7 +38,7 @@ int main() {
     testEvery.controlPolicy =
         std::make_unique<DirControlPolicy>(std::move(controlPolicy));
     testEvery.cleanUpPolicy =
-        std::make_unique<DirCleanUpPolicy>(std::move(cleanUpPolicy));
+        std::make_unique<DeletePolicy>(std::move(cleanUpPolicy));
     directories.emplace_back(std::move(testEvery));
   }
   else

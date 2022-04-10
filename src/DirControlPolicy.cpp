@@ -23,7 +23,7 @@ bool DirControlPolicy::isAgreement(string &path) const {
     return fileCount <= _value;
   }
 
-  if (_type == controlPolicyType::max_size) {
+  if (_type == controlPolicyType::max_size_in_mb) {
     // check if max size is reached
     double dirSize = accumulate(
         fs::recursive_directory_iterator(path),

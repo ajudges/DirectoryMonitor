@@ -1,4 +1,4 @@
-#include "DirCleanUpPolicy.h"
+#include "DeletePolicy.h"
 #include <filesystem>
 #include <iostream>
 #include <numeric>
@@ -7,17 +7,17 @@ using std::accumulate;
 using std::cout;
 namespace fs = std::filesystem;
 
-DirCleanUpPolicy::DirCleanUpPolicy(cleanUpPolicyType policy, vector<string> exclude)
+DeletePolicy::DeletePolicy(deletePolicyType policy, vector<string> exclude)
     : _policy(policy) {
-  if (_policy == cleanUpPolicyType::exclude)
+  if (_policy == deletePolicyType::exclude)
     _exclude = exclude;
 }
 
-DirCleanUpPolicy::DirCleanUpPolicy(cleanUpPolicyType policy) : _policy(policy) {}
+DeletePolicy::DeletePolicy(deletePolicyType policy) : _policy(policy) {}
 
-DirCleanUpPolicy::~DirCleanUpPolicy() {}
+DeletePolicy::~DeletePolicy() {}
 
-void DirCleanUpPolicy::CleanUp(string &dir) {
+void DeletePolicy::CleanUp(string &dir) {
   int count(0);
   auto exclude = std::make_shared<vector<string>>(_exclude);
   auto delCount = accumulate(

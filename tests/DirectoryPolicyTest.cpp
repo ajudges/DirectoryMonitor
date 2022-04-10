@@ -39,7 +39,7 @@ void test_max_size() {
   int size = 10000000; //~10MB
   std::generate_n(std::ostream_iterator<char>(file, ""), size, [&]{ return dis(gen); });
 
-  DirControlPolicy dirPolicy(controlPolicyType::max_size, 2);
+  DirControlPolicy dirPolicy(controlPolicyType::max_size_in_mb, 2);
   assert(dirPolicy.isAgreement(dirName) == false);
   
   fs::remove(sandbox/ "text_file.txt");

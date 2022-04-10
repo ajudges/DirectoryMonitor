@@ -3,7 +3,7 @@
 
 using std::string;
 
-enum controlPolicyType { max_size, max_num_of_content };
+enum controlPolicyType { max_size_in_mb, max_num_of_content };
 
 class DirControlPolicy {
 private:

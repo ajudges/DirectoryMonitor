@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <numeric>
-#include "../include/DirCleanUpPolicy.h"
+#include "../include/DeletePolicy.h"
 
 using std::accumulate;
 namespace fs = std::filesystem;
@@ -14,7 +14,7 @@ void test_clean_all() {
     std::ofstream("sandbox/file1.txt");
     std::ofstream("sandbox/file2.txt");
     std::ofstream("sandbox/file3.txt");
-    DirCleanUpPolicy cleanUpPolicy(cleanUpPolicyType::ALL);
+    DeletePolicy cleanUpPolicy(deletePolicyType::ALL);
 
     cleanUpPolicy.CleanUp(dirName);
     int count(0);
@@ -36,7 +36,7 @@ void test_exclude() {
   std::ofstream("sandbox/file3.txt");
   std::ofstream("sandbox/file4.txt");
   vector<string> excludeTwoFiles{"file1.txt", "file2.txt"};
-  DirCleanUpPolicy cleanUpPolicyExcludeTwo(cleanUpPolicyType::exclude, excludeTwoFiles);
+  DeletePolicy cleanUpPolicyExcludeTwo(deletePolicyType::exclude, excludeTwoFiles);
 
   cleanUpPolicyExcludeTwo.CleanUp(dirName);
   int count(0);
@@ -47,7 +47,7 @@ void test_exclude() {
     assert(fileCount == 2);
 
     vector<string> excludeNone;
-    DirCleanUpPolicy cleanUpPolicyExcludeNone(cleanUpPolicyType::exclude, excludeNone);
+    DeletePolicy cleanUpPolicyExcludeNone(deletePolicyType::exclude, excludeNone);
     cleanUpPolicyExcludeNone.CleanUp(dirName);
     count = 0;
     fileCount =
