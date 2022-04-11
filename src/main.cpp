@@ -36,7 +36,7 @@ void ReadConf(vector<inputConf> &confs) {
     string key;
     string line;
     string delimiter;
-    string ignore{"{[]}"};
+    string ignore{"{[]"};
     string value;
     string pathValue;
     string controlPolicyType;
@@ -56,10 +56,10 @@ void ReadConf(vector<inputConf> &confs) {
         cout << "Key is... "<< key << std::endl;
         continue;
       }
-      // if (key == "}") {
-      //   confs.emplace_back((*configuration));
-        // inputConf *configuration{};
-      // }
+      if (key == "}") {
+        confs.emplace_back(std::move(*configuration));
+        configuration = new inputConf;
+      }
       if (key == ConfParser::pathKey) {
         while (linestream >> buffer){
           if (pathValue.empty()){
@@ -98,6 +98,8 @@ void ReadConf(vector<inputConf> &confs) {
         }
       }
     }
+    delete configuration;
+    configuration = nullptr;
   }
 }
 
