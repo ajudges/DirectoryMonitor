@@ -1,7 +1,12 @@
 [
     {
-        "dirPath": "/Users/nnamdiajah/code/C++/DirectoryMonitor/build/untitled folder",
-        "controlPolicyType": "max_num_of_content: 2",
+        "dirPath": "/absolute/path/to/directory1",
+        "controlPolicyType": "maxNumOfContent: 2",
         "deletePolicyType": "ALL"
+    },
+    {
+        "dirPath": "/absolute/path/to/directory2",
+        "controlPolicyType": "maxSizeInMb: 3",
+        "deletePolicyType": "exclude: fileToExclude1.txt, fileToExclude2.txtx"
     }
 ]
