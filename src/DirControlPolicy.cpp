@@ -33,8 +33,6 @@ bool DirControlPolicy::isAgreement(string &path) const {
         });
     dirSize /= (1024. * 1024.); // convert to MB
     dirSize = std::ceil(dirSize * 10.) / 10.;
-
-    cout << "File size is: " << dirSize << " MB" << std::endl;
     return dirSize <= _value;
   }
 
