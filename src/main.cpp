@@ -28,15 +28,15 @@ struct inputConf {
 
 // Read configuration file
 // void ReadConf(string user_input, string &x) {
-void ReadConf(inputConf &conf) {
+void ReadConf(vector<inputConf> &confs) {
 
   std::ifstream stream(ConfParser::confFile);
   if (stream.is_open()) {
-    cout << "conf path exists"<< std::endl;
+    cout << "confs path exists"<< std::endl;
     string key;
     string line;
     string delimiter;
-    string ignore{"[]{}"};
+    string ignore{"{[]}"};
     string value;
     string pathValue;
     string controlPolicyType;
@@ -44,7 +44,9 @@ void ReadConf(inputConf &conf) {
     string deletePolicyType;
     vector<string> deletePolicyValue;
     string buffer;
+    inputConf* configuration = new inputConf;
     while (std::getline(stream, line)) {
+      pathValue = ""; // prevent concatenation of multiple paths
       std::replace(line.begin(), line.end(), '"', ' ');
       std::replace(line.begin(), line.end(), ':', ' ');
       std::replace(line.begin(), line.end(), ',', ' ');
@@ -54,6 +56,10 @@ void ReadConf(inputConf &conf) {
         cout << "Key is... "<< key << std::endl;
         continue;
       }
+      // if (key == "}") {
+      //   confs.emplace_back((*configuration));
+        // inputConf *configuration{};
+      // }
       if (key == ConfParser::pathKey) {
         while (linestream >> buffer){
           if (pathValue.empty()){
@@ -64,27 +70,27 @@ void ReadConf(inputConf &conf) {
             pathValue += buffer;
           }
         }
-        conf.path = pathValue;
-        cout << "pathValue is: "<< pathValue << std::endl; 
+        configuration->path = pathValue;
+        cout << "pathValue is: "<< pathValue << std::endl;
       }
       if (key == ConfParser::controlPolicyKey) {
         linestream >> controlPolicyType >> controlPolicyValue;
         cout << "controlPolicyType is: "<< controlPolicyType << std::endl;
         cout << "controlPolicyValue is: "<< controlPolicyValue << std::endl;
         if (controlPolicyType == ConfParser::maxSizeInMb){
-          conf.dirControlPolicy = controlPolicyType::max_size_in_mb;
+          configuration->dirControlPolicy = controlPolicyType::max_size_in_mb;
         } else if (controlPolicyType == ConfParser::maxNumOfContent){
-          conf.dirControlPolicy = controlPolicyType::max_num_of_content;
+          configuration->dirControlPolicy = controlPolicyType::max_num_of_content;
         }
-        conf.dirControlPolicyValue = controlPolicyValue;
+        configuration->dirControlPolicyValue = controlPolicyValue;
       }
       if (key == ConfParser::deletePolicyKey) {
         linestream >> deletePolicyType;
         cout << "deletePolicyType is: "<< deletePolicyType << std::endl;
         if (deletePolicyType == ConfParser::delAll) {
-          conf.dirDeletepolicy = deletePolicyType::ALL;
+          configuration->dirDeletepolicy = deletePolicyType::ALL;
         } else if (deletePolicyType == ConfParser::excludeSome) {
-          conf.dirDeletepolicy = deletePolicyType::exclude;
+          configuration->dirDeletepolicy = deletePolicyType::exclude;
         }
         while (linestream >> buffer) {
           deletePolicyValue.emplace_back(buffer);
@@ -104,26 +110,30 @@ void GetInput(string user_input, string &x) {
 }
 
 int main() {
-  inputConf conf;
-  ReadConf(conf);
-
-  DirControlPolicy controlPolicy(conf.dirControlPolicy, conf.dirControlPolicyValue);
-  DeletePolicy cleanUpPolicy(conf.dirDeletepolicy);
+  vector<inputConf> confs;
+  ReadConf(confs);
 
   vector<dirPolicy> directories;
-  if (fs::is_directory(conf.path)) {
-    dirPolicy testEvery;
-    testEvery.path = std::make_unique<string>(std::move(conf.path));
-    testEvery.controlPolicy =
-        std::make_unique<DirControlPolicy>(std::move(controlPolicy));
-    testEvery.cleanUpPolicy =
-        std::make_unique<DeletePolicy>(std::move(cleanUpPolicy));
-    directories.emplace_back(std::move(testEvery));
-  }
-  else
+  for (auto &configuration : confs)
   {
-    cout << "Path ,," << conf.path << "´´ does not exists" << std::endl;
+    if (fs::is_directory(configuration.path)) {
+      DirControlPolicy controlPolicy(configuration.dirControlPolicy, configuration.dirControlPolicyValue);
+      DeletePolicy cleanUpPolicy(configuration.dirDeletepolicy);
+
+      dirPolicy testEvery;
+      testEvery.path = std::make_unique<string>(std::move(configuration.path));
+      testEvery.controlPolicy =
+          std::make_unique<DirControlPolicy>(std::move(controlPolicy));
+      testEvery.cleanUpPolicy =
+          std::make_unique<DeletePolicy>(std::move(cleanUpPolicy));
+      directories.emplace_back(std::move(testEvery));
+    }
+    else
+    {
+      cout << "Path ,," << configuration.path << "´´ does not exists" << std::endl;
+    }
   }
+
   std::vector<std::future<void>> futures;
   if (!directories.empty()) {
     while (true) {
