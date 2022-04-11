@@ -3,6 +3,25 @@ Manages the size/number of content of specified system directories. If a directo
 
 This project is motivated by the constrained space resource on embedded systems, whereby files are written to certain directories, but the directories may not be expected to exceed a certain size or number of files. 
 
+## Run the Project
+Pre-requisite
+1. Create one or more test folders 
+
+### Run
+1. Clone repo
+2. Navigate to the root directory of the project
+3. Edit ./directoryConf in a text editor
+	See template in section _Sample of configuration file_ below
+	OR
+	Put absolute paths of test folder(s) created in the pre-requisite
+4. Create a folder (`build`) in the root directory
+`mkdir ./build`
+5. Navigate to the `build` folder and build the project
+`cd ./build && cmake .. && make`
+6. Run the program
+`./DirectoryMonitor`
+7. Copy files/folders to the test folders to breach the `controlPolicyType` in `./directoryConf`
+
 ## Workflow
 Reads `dirPath`, `controlPolicyType` (`maxSizeInMb`/`maxNumOfContent`) `deletePolicyType` from a configuration file -- directoryConf.
 Check if directory exist.
