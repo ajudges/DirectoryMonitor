@@ -1,10 +1,12 @@
 #include "DeletePolicy.h"
 #include "DirControlPolicy.h"
+#include "ConfParser.h"
 
 #include <filesystem>
 #include <future>
 #include <iostream>
-#include <thread>
+#include <fstream>
+#include <sstream>
 
 using std::cin;
 using std::cout;
@@ -16,8 +18,84 @@ struct dirPolicy {
   std::unique_ptr<DeletePolicy> cleanUpPolicy;
 };
 
+struct inputConf {
+  string path;
+  controlPolicyType dirControlPolicy;
+  double dirControlPolicyValue;
+  deletePolicyType dirDeletepolicy;
+  vector<string> dirExcludeSome;
+};
+
 // Read configuration file
-void ReadConf(string user_input, string &x) {
+// void ReadConf(string user_input, string &x) {
+void ReadConf(inputConf &conf) {
+
+  std::ifstream stream(ConfParser::confFile);
+  if (stream.is_open()) {
+    cout << "conf path exists"<< std::endl;
+    string key;
+    string line;
+    string delimiter;
+    string ignore{"[]{}"};
+    string value;
+    string pathValue;
+    string controlPolicyType;
+    double controlPolicyValue;
+    string deletePolicyType;
+    vector<string> deletePolicyValue;
+    string buffer;
+    while (std::getline(stream, line)) {
+      std::replace(line.begin(), line.end(), '"', ' ');
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::replace(line.begin(), line.end(), ',', ' ');
+      std::istringstream linestream(line);
+      linestream >> key;
+      if (ignore.find(key) != std::string::npos) {
+        cout << "Key is... "<< key << std::endl;
+        continue;
+      }
+      if (key == ConfParser::pathKey) {
+        while (linestream >> buffer){
+          if (pathValue.empty()){
+            pathValue = buffer;
+          }
+          else { // take care of empty space in folder names
+            pathValue += " ";
+            pathValue += buffer;
+          }
+        }
+        conf.path = pathValue;
+        cout << "pathValue is: "<< pathValue << std::endl; 
+      }
+      if (key == ConfParser::controlPolicyKey) {
+        linestream >> controlPolicyType >> controlPolicyValue;
+        cout << "controlPolicyType is: "<< controlPolicyType << std::endl;
+        cout << "controlPolicyValue is: "<< controlPolicyValue << std::endl;
+        if (controlPolicyType == ConfParser::maxSizeInMb){
+          conf.dirControlPolicy = controlPolicyType::max_size_in_mb;
+        } else if (controlPolicyType == ConfParser::maxNumOfContent){
+          conf.dirControlPolicy = controlPolicyType::max_num_of_content;
+        }
+        conf.dirControlPolicyValue = controlPolicyValue;
+      }
+      if (key == ConfParser::deletePolicyKey) {
+        linestream >> deletePolicyType;
+        cout << "deletePolicyType is: "<< deletePolicyType << std::endl;
+        if (deletePolicyType == ConfParser::delAll) {
+          conf.dirDeletepolicy = deletePolicyType::ALL;
+        } else if (deletePolicyType == ConfParser::excludeSome) {
+          conf.dirDeletepolicy = deletePolicyType::exclude;
+        }
+        while (linestream >> buffer) {
+          deletePolicyValue.emplace_back(buffer);
+          cout << "buffer is: "<< buffer << std::endl;
+        }
+      }
+    }
+  }
+}
+
+void GetInput(string user_input, string &x) {
   cout << "Enter " << user_input << ": " << std::endl;
   std::cin >> x;
 
@@ -26,16 +104,16 @@ void ReadConf(string user_input, string &x) {
 }
 
 int main() {
-  string dir_path;
-  ReadConf("path to monitor", dir_path);
+  inputConf conf;
+  ReadConf(conf);
 
-  DirControlPolicy controlPolicy(controlPolicyType::max_num_of_content, 2);
-  DeletePolicy cleanUpPolicy(deletePolicyType::ALL);
+  DirControlPolicy controlPolicy(conf.dirControlPolicy, conf.dirControlPolicyValue);
+  DeletePolicy cleanUpPolicy(conf.dirDeletepolicy);
 
   vector<dirPolicy> directories;
-  if (fs::is_directory(dir_path)) {
+  if (fs::is_directory(conf.path)) {
     dirPolicy testEvery;
-    testEvery.path = std::make_unique<string>(std::move(dir_path));
+    testEvery.path = std::make_unique<string>(std::move(conf.path));
     testEvery.controlPolicy =
         std::make_unique<DirControlPolicy>(std::move(controlPolicy));
     testEvery.cleanUpPolicy =
@@ -44,7 +122,7 @@ int main() {
   }
   else
   {
-    cout << "Path ,," << dir_path << "´´ does not exists" << std::endl;
+    cout << "Path ,," << conf.path << "´´ does not exists" << std::endl;
   }
   std::vector<std::future<void>> futures;
   if (!directories.empty()) {
