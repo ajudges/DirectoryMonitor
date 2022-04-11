@@ -3,7 +3,7 @@
 
 using std::string;
 
-enum controlPolicyType { max_size_in_mb, max_num_of_content };
+enum controlPolicyType { max_size_in_mb, max_num_of_content, undefined }; // policies to check on directory
 
 class DirControlPolicy {
 private:
@@ -12,6 +12,7 @@ private:
 
 public:
   DirControlPolicy(controlPolicyType policy, double value);
-  bool isAgreement(string &path) const; // is directory in agreement with policy?
+  bool
+  isAgreement(string &path) const; // is directory in agreement with policy?
   ~DirControlPolicy();
 };

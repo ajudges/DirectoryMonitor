@@ -12,32 +12,29 @@ using std::cin;
 using std::cout;
 namespace fs = std::filesystem;
 
-struct dirPolicy {
+struct dirPolicy { // for initialized directory configurations
   std::unique_ptr<string> path;
   std::unique_ptr<DirControlPolicy> controlPolicy;
   std::unique_ptr<DeletePolicy> cleanUpPolicy;
   std::unique_ptr<vector<string>> excludeFiles;
 };
 
-struct inputConf {
+struct inputConf { // to store configurations from file
   string path;
-  controlPolicyType dirControlPolicy;
-  double dirControlPolicyValue;
-  deletePolicyType dirDeletepolicy;
+  controlPolicyType dirControlPolicy{controlPolicyType::undefined}; // define with undefined to predict behavior
+  double dirControlPolicyValue{100}; // default of 100 mb in size or number of content
+  deletePolicyType dirDeletepolicy{deletePolicyType::ALL}; // default of delete all files
   vector<string> dirExcludeSome;
 };
 
 // Read configuration file
-// void ReadConf(string user_input, string &x) {
 void ReadConf(vector<inputConf> &confs) {
 
-  std::ifstream stream(ConfParser::confFile);
+  std::ifstream stream(ConfParser::confFile); //
   if (stream.is_open()) {
-    cout << "confs path exists" << std::endl;
     string key;
     string line;
     string delimiter;
-    string ignore{"{[]"};
     string value;
     string pathValue;
     string controlPolicyType;
@@ -53,30 +50,35 @@ void ReadConf(vector<inputConf> &confs) {
       std::replace(line.begin(), line.end(), ',', ' ');
       std::istringstream linestream(line);
       linestream >> key;
-      if (ignore.find(key) != std::string::npos) {
-        cout << "Key is... " << key << std::endl;
+      if (ConfParser::ignore.find(key) !=
+          std::string::npos) { // skip lines that don't contain any keys
         continue;
       }
-      if (key == "}") {
+
+      // end of a configuration;
+      // push old configuration to container and create a new one
+      else if (key == ConfParser::endOfConf) {
         confs.emplace_back(std::move(*configuration));
         configuration = new inputConf;
+        continue;
       }
-      if (key == ConfParser::pathKey) {
+
+      // Get directory to monitor
+      else if (key == ConfParser::pathKey) {
         while (linestream >> buffer) {
-          if (pathValue.empty()) {
-            pathValue = buffer;
-          } else { // take care of empty space in folder names
-            pathValue += " ";
-            pathValue += buffer;
-          }
+          pathValue =
+              (pathValue.empty())
+                  ? buffer
+                  : pathValue +=
+                    " " + buffer; // take care of empty space in folder names
         }
         configuration->path = pathValue;
         cout << "pathValue is: " << pathValue << std::endl;
       }
-      if (key == ConfParser::controlPolicyKey) {
+
+      // Get directory control policy
+      else if (key == ConfParser::controlPolicyKey) {
         linestream >> controlPolicyType >> controlPolicyValue;
-        cout << "controlPolicyType is: " << controlPolicyType << std::endl;
-        cout << "controlPolicyValue is: " << controlPolicyValue << std::endl;
         if (controlPolicyType == ConfParser::maxSizeInMb) {
           configuration->dirControlPolicy = controlPolicyType::max_size_in_mb;
         } else if (controlPolicyType == ConfParser::maxNumOfContent) {
@@ -85,12 +87,11 @@ void ReadConf(vector<inputConf> &confs) {
         }
         configuration->dirControlPolicyValue = controlPolicyValue;
       }
-      if (key == ConfParser::deletePolicyKey) {
+
+      // Get directory clean up/delete policy
+      else if (key == ConfParser::deletePolicyKey) {
         linestream >> deletePolicyType;
-        cout << "deletePolicyType is: " << deletePolicyType << std::endl;
-        if (deletePolicyType == ConfParser::delAll) {
-          configuration->dirDeletepolicy = deletePolicyType::ALL;
-        } else if (deletePolicyType == ConfParser::excludeSome) {
+        if (deletePolicyType == ConfParser::excludeSome) {
           configuration->dirDeletepolicy = deletePolicyType::exclude;
           while (linestream >> buffer) {
             deletePolicyValue.emplace_back(buffer);
@@ -100,26 +101,18 @@ void ReadConf(vector<inputConf> &confs) {
         }
       }
     }
-    delete configuration;
+    delete configuration; // prevent dangling pointers
     configuration = nullptr;
   }
 }
 
-void GetInput(string user_input, string &x) {
-  cout << "Enter " << user_input << ": " << std::endl;
-  std::cin >> x;
-
-  std::cout << "Accepted input value " << x << std::endl;
-  return;
-}
-
 int main() {
-  vector<inputConf> confs;
+  vector<inputConf> confs; // container to hold configurations
   ReadConf(confs);
 
-  vector<dirPolicy> directories;
+  vector<dirPolicy> directories; // container to hold initialized directory configurations 
   for (auto &configuration : confs) {
-    if (fs::is_directory(configuration.path)) {
+    if (fs::is_directory(configuration.path) && configuration.dirControlPolicy != undefined) {
       DirControlPolicy controlPolicy(configuration.dirControlPolicy,
                                      configuration.dirControlPolicyValue);
       DeletePolicy cleanUpPolicy =
@@ -135,7 +128,7 @@ int main() {
           std::make_unique<DeletePolicy>(std::move(cleanUpPolicy));
       directories.emplace_back(std::move(testEvery));
     } else {
-      cout << "Path ,," << configuration.path << "´´ does not exists"
+      cout << "Path ,," << configuration.path << "´´ does not exist" << " or " << " control policy not properly defined"
            << std::endl;
     }
   }
@@ -149,7 +142,7 @@ int main() {
           std::cout << "Directory ,," << (*directory.path)
                     << "´´ policy is breached, cleaning up... :-)" << std::endl;
 
-          // clean up in separate thread
+          // clean up in a parallel execution
           futures.emplace_back(std::async(std::launch::async, [&directory]() {
             directory.cleanUpPolicy->CleanUp(*directory.path);
           }));

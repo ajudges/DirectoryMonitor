@@ -5,7 +5,7 @@
 using std::vector;
 using std::string;
 
-enum deletePolicyType { ALL, exclude };
+enum deletePolicyType { ALL, exclude }; // manage deleting files in directory
 
 // Policy to manage cleaning up a directory
 class DeletePolicy
