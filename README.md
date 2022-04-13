@@ -36,11 +36,11 @@ If deviating from `monitoring policy`
 	- output a policy breached message
 
 ### Sample of configuration file -- directoryConf
-The file directoryConf is a `list[json]`
-The sample below has a monitoring configuration for two directories. 
-directory1 has a control policy of maximum number of content - 2. It has a delete policy to delete all files when number of content > 2.
+The file directoryConf is a `list[json]`. To add more directories, just add an additional json. See examples below
+#### Sample Conf One directory
 
-directory2 has a control policy max size - 3 MB. It has a delete policy to delete all but file1.txt and file2.txt;
+The sample below has a monitoring configuration for a directory. 
+directory1 has a control policy of maximum number of content - 2. It has a delete policy to delete all files when number of content > 2.
 
 `
 [
@@ -48,13 +48,25 @@ directory2 has a control policy max size - 3 MB. It has a delete policy to delet
         "dirPath": "/absolute/path/to/directory1",
         "controlPolicyType": "maxNumOfContent: 2",
         "deletePolicyType": "ALL"
-    },
-    {
-        "dirPath": "/absolute/path/to/directory2",
-        "controlPolicyType": "maxSizeInMb: 3",
-        "deletePolicyType": "exclude: file1.txt, file2.txt"
     }
 ]
+`
+
+#### Sample Conf with Two directories
+This adds an additional directory (directory2) to monitor. directory2 has a control policy max size - 3 MB. It has a delete policy to delete all but file1.txt and file2.txt;
+`
+[\
+	{\
+		"dirPath": "/absolute/path/to/directory1",\
+		"controlPolicyType": "maxNumOfContent: 2",\
+		"deletePolicyType": "ALL"\
+	},\
+	{\
+		"dirPath": "/absolute/path/to/directory2",\
+		"controlPolicyType": "maxSizeInMb: 3",\
+		"deletePolicyType": "exclude: file1.txt, file2.txt"\
+	}\
+]\
 `
 ## Rubric points addressed
 ### Loops, Functions, I/O
