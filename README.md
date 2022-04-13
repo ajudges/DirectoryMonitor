@@ -3,6 +3,35 @@ Manages the size/number of content of specified system directories. If a directo
 
 This project is motivated by the constrained space resource on embedded systems, whereby files are written to certain directories, but the directories may not be expected to exceed a certain size or number of files. 
 
+## Dependencies
+### C++17
+Make sure your C++ compiler supports C++17:
+Ubuntu + GCC
+```bash
+g++ --version
+```
+Output should be something like
+```console
+g++-8 (Ubuntu 8.4.0-1ubuntu1~18.04) 8.4.0
+```
+
+Mac Os + Clang
+``` bash
+clang --version
+```
+Output should be something like
+```console
+Apple clang version 11.0.0 (clang-1100.0.33.8)
+```
+
+Windows + MSVC
+```
+!!! warning ""
+    * Visit the [Visual Studio](https://visualstudio.microsoft.com) website
+    * Download Git from [https://git-scm.com/download/win](https://git-scm.com/download/win) and install it
+```
+
+
 ## Run the Project
 Pre-requisite
 1. Create one or more test folders 
@@ -42,7 +71,7 @@ The file directoryConf is a `list[json]`. To add more directories, just add an a
 The sample below has a monitoring configuration for a directory. 
 directory1 has a control policy of maximum number of content - 2. It has a delete policy to delete all files when number of content > 2.
 
-`
+```json
 [
     {
         "dirPath": "/absolute/path/to/directory1",
@@ -50,24 +79,24 @@ directory1 has a control policy of maximum number of content - 2. It has a delet
         "deletePolicyType": "ALL"
     }
 ]
-`
+```
 
 #### Sample Conf with Two directories
 This adds an additional directory (directory2) to monitor. directory2 has a control policy max size - 3 MB. It has a delete policy to delete all but file1.txt and file2.txt;
-`
-[\
-	{\
-		"dirPath": "/absolute/path/to/directory1",\
-		"controlPolicyType": "maxNumOfContent: 2",\
-		"deletePolicyType": "ALL"\
-	},\
-	{\
-		"dirPath": "/absolute/path/to/directory2",\
-		"controlPolicyType": "maxSizeInMb: 3",\
-		"deletePolicyType": "exclude: file1.txt, file2.txt"\
-	}\
-]\
-`
+```json
+[
+	{
+		"dirPath": "/absolute/path/to/directory1",
+		"controlPolicyType": "maxNumOfContent: 2",
+		"deletePolicyType": "ALL"
+	},
+	{
+		"dirPath": "/absolute/path/to/directory2",
+		"controlPolicyType": "maxSizeInMb: 3",
+		"deletePolicyType": "exclude: file1.txt, file2.txt"
+	}
+]
+```
 ## Rubric points addressed
 ### Loops, Functions, I/O
 - The project demonstrates an understanding of C++ functions and control structures: The program makes use of a variety of control structures and is organized into namespaces, and functions.
@@ -97,4 +126,3 @@ This adds an additional directory (directory2) to monitor. directory2 has a cont
 If getting the error `filesystem` is not a namespace-name. Kindly ensure your compiler version is up to date with the standard C++17. Kindly see
 [C++ Filesystem library](https://en.cppreference.com/w/cpp/filesystem)
 
-[c++17 `filesystem` is not a namespace-name](https://stackoverflow.com/questions/48312460/c17-filesystem-is-not-a-namespace-name)
