@@ -80,3 +80,9 @@ directory2 has a control policy max size - 3 MB. It has a delete policy to delet
 
 ### Concurrency
 - The project uses multithreading: The project makes use of parrallel execution when enforcing `DeletePolicy`
+
+## NOTE:
+If getting the error `filesystem` is not a namespace-name. Kindly ensure your compiler version is up to date with the standard C++17. Kindly see
+[C++ Filesystem library](https://en.cppreference.com/w/cpp/filesystem)
+
+[c++17 `filesystem` is not a namespace-name](https://stackoverflow.com/questions/48312460/c17-filesystem-is-not-a-namespace-name)
