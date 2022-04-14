@@ -95,7 +95,7 @@ void ReadConf(vector<inputConf> &confs) {
           configuration->dirDeletepolicy = deletePolicyType::exclude;
           while (linestream >> buffer) {
             deletePolicyValue.emplace_back(buffer);
-            cout << "Excluding `" << buffer <<"` from being delted" << std::endl;
+            cout << "Excluding `" << buffer <<"` from being deleted" << std::endl;
           }
           configuration->dirExcludeSome = deletePolicyValue;
         }
