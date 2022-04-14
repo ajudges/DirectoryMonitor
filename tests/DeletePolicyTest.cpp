@@ -2,6 +2,7 @@
 #include <iostream>
 #include <numeric>
 #include "../include/DeletePolicy.h"
+#include <cassert>
 
 using std::accumulate;
 namespace fs = std::experimental::filesystem;

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <numeric>
 #include <random>
+#include <cassert>
 
 using std::accumulate;
 namespace fs = std::experimental::filesystem;
