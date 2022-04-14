@@ -2,11 +2,9 @@
 #include <filesystem>
 #include <iostream>
 #include <numeric>
-#include <experimental/filesystem>
 
 using std::accumulate;
 using std::cout;
-namespace fs = std::experimental::filesystem;
 
 DirControlPolicy::DirControlPolicy(controlPolicyType policy, double value)
     : _type(policy), _value(value) {}

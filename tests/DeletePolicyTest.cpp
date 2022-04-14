@@ -4,7 +4,7 @@
 #include "../include/DeletePolicy.h"
 
 using std::accumulate;
-namespace fs = std::filesystem;
+namespace fs = std::experimental::filesystem;
 
 void test_clean_all() {
     string dirName{"sandbox"};

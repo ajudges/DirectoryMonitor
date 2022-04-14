@@ -2,9 +2,11 @@
 #include <vector>
 #include <string>
 #include <mutex>
+#include <experimental/filesystem>
 
 using std::vector;
 using std::string;
+namespace fs = std::experimental::filesystem;
 
 enum deletePolicyType { ALL, exclude }; // manage deleting files in directory
 

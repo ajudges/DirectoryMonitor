@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
+#include <experimental/filesystem>
 
 using std::string;
+namespace fs = std::experimental::filesystem;
 
 enum controlPolicyType { max_size_in_mb, max_num_of_content, undefined }; // policies to check on directory
 

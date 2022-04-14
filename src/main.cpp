@@ -10,7 +10,6 @@
 
 using std::cin;
 using std::cout;
-namespace fs = std::filesystem;
 
 struct dirPolicy { // for initialized directory configurations
   std::unique_ptr<string> path;
