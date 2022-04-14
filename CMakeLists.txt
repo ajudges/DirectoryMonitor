@@ -8,14 +8,16 @@ include_directories(include)
 # Find all executables
 file(GLOB project_SRCS src/*.cpp) #src/*.h
 
+# link experimental::filesystem in linux
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    link_libraries(stdc++fs)  
+endif(CMAKE_SYSTEM STREQUAL Linux)
+
 # Add project executable
 add_executable(DirectoryMonitor ${project_SRCS})
 
 # check for memory leak
 target_link_libraries(DirectoryMonitor -fsanitize=address)
-
-# link experimental library
-target_link_libraries(DirectoryMonitor stdc++fs)
 
 # Add the testing executable
 add_executable(test_DirControlPolicy tests/DirectoryPolicyTest.cpp src/DirControlPolicy.cpp)
