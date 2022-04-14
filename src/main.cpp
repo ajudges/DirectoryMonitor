@@ -57,6 +57,7 @@ void ReadConf(vector<inputConf> &confs) {
       // push old configuration to container and create a new one
       else if (key == ConfParser::endOfConf) {
         confs.emplace_back(std::move(*configuration));
+        delete configuration;
         configuration = new inputConf;
         continue;
       }
@@ -111,6 +112,8 @@ int main() {
   vector<dirPolicy> directories; // container to hold initialized directory configurations 
   for (auto &configuration : confs) {
     if (fs::is_directory(configuration.path) && configuration.dirControlPolicy != undefined) {
+      cout << "Path ,," << configuration.path << "´´ exists" << " and " << " control policy is properly defined"
+           << std::endl;
       DirControlPolicy controlPolicy(configuration.dirControlPolicy,
                                      configuration.dirControlPolicyValue);
       DeletePolicy cleanUpPolicy =

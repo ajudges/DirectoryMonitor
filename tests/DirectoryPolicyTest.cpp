@@ -4,6 +4,8 @@
 #include <numeric>
 #include <random>
 #include <cassert>
+#include <algorithm>
+#include <iterator>
 
 using std::accumulate;
 namespace fs = std::experimental::filesystem;
