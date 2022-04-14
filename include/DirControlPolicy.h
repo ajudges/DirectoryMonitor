@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <experimental/filesystem>
+#include <cmath>
 
 using std::string;
 namespace fs = std::experimental::filesystem;
