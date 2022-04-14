@@ -7,6 +7,6 @@
     {
         "dirPath": "/absolute/path/to/directory2",
         "controlPolicyType": "maxSizeInMb: 3",
-        "deletePolicyType": "exclude: fileToExclude1.txt, fileToExclude2.txtx"
+        "deletePolicyType": "exclude: fileToExclude1.txt, fileToExclude2.txt"
     }
 ]
