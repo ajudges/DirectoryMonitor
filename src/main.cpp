@@ -117,17 +117,17 @@ int main() {
       DirControlPolicy controlPolicy(configuration.dirControlPolicy,
                                      configuration.dirControlPolicyValue);
       DeletePolicy cleanUpPolicy =
-          (configuration.dirDeletepolicy == deletePolicyType::exclude)
+          (configuration.dirDeletepolicy == deletePolicyType::exclude) // check if delete policy requires some files to exclude
               ? DeletePolicy(configuration.dirDeletepolicy,
-                             configuration.dirExcludeSome)
-              : DeletePolicy(configuration.dirDeletepolicy);
-      dirPolicy testEvery;
-      testEvery.path = std::make_unique<string>(std::move(configuration.path));
-      testEvery.controlPolicy =
+                             configuration.dirExcludeSome)   // construct DeletePolicy with exclude
+              : DeletePolicy(configuration.dirDeletepolicy); // construct DeletePolicy without exclude
+      dirPolicy newDirPolicy;
+      newDirPolicy.path = std::make_unique<string>(std::move(configuration.path));
+      newDirPolicy.controlPolicy =
           std::make_unique<DirControlPolicy>(std::move(controlPolicy));
-      testEvery.cleanUpPolicy =
+      newDirPolicy.cleanUpPolicy =
           std::make_unique<DeletePolicy>(std::move(cleanUpPolicy));
-      directories.emplace_back(std::move(testEvery));
+      directories.emplace_back(std::move(newDirPolicy));
     } else {
       cout << "Path ,," << configuration.path << "´´ does not exist" << " or " << " control policy not properly defined"
            << std::endl;
