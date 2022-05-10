@@ -103,6 +103,10 @@ void ReadConf(vector<inputConf> &confs) {
     delete configuration; // prevent dangling pointers
     configuration = nullptr;
   }
+  else {
+    cout << "Configuration file not found" << std::endl;
+    cout << "Please create directoryConf file in the upper level directory" << std::endl;
+  }
 }
 
 int main() {
