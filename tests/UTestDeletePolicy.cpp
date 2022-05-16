@@ -62,5 +62,4 @@ void test_exclude() {
 int main () {
     test_clean_all();
     test_exclude();
-
 }

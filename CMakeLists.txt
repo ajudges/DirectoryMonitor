@@ -20,5 +20,5 @@ add_executable(DirectoryMonitor ${project_SRCS})
 target_link_libraries(DirectoryMonitor -fsanitize=address)
 
 # Add the testing executable
-add_executable(test_DirControlPolicy tests/DirectoryPolicyTest.cpp src/DirControlPolicy.cpp)
-add_executable(test_DeletePolicy tests/DeletePolicyTest.cpp src/DeletePolicy.cpp)
+enable_testing()
+add_subdirectory(tests)
